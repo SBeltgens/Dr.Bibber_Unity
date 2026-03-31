@@ -17,6 +17,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MRI.unity
     guid: a2e44445232c62a408e62fe84ba11367
+  - enabled: 1
+    path: Assets/Scenes/Naar huis.unity
+    guid: 3b38562f71192894b8d078fbb4866d09
+  - enabled: 1
+    path: Assets/Scenes/Omkleden.unity
+    guid: 5eb9832c5267c1f448052cac96e9fc2b
+  - enabled: 1
+    path: Assets/Scenes/Prikken.unity
+    guid: 2a2b2370aedf4d64d8506763a3c4635a
+  - enabled: 1
+    path: Assets/Scenes/Wachtruimte.unity
+    guid: 8ff3748a1b29b1e49b68f30141a3ffa4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
