@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class PanelManager : MonoBehaviour
 {
-    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject panel;
 
-    public void OpenSettings()
+    public void OpenPanel()
     {
-        settingsPanel.SetActive(true);
+        panel.SetActive(true);
     }
 
-    public void CloseSettings()
+    public void ClosePanel()
     {
-        settingsPanel.SetActive(false);
+        panel.SetActive(false);
     }
 }
