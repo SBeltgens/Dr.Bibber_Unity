@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class MoveAvatar : MonoBehaviour
 {
+
     public float speed = 20f;
     private Rigidbody2D rb;
 
@@ -12,9 +13,9 @@ public class MoveAvatar : MonoBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log(rb.linearVelocity.x);
         float moveInput = Input.GetAxis("Horizontal");
 
         rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
     }
+
 }
