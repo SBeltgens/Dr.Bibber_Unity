@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1883652725266595327}
-  - component: {fileID: 2443870444826563890}
+  - component: {fileID: 651406350117002581}
   m_Layer: 0
   m_Name: ExampleApp
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4740306850306999695}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2443870444826563890
+--- !u!114 &651406350117002581
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,24 +47,7 @@ MonoBehaviour:
   user:
     Email: 
     Password: 
-  environment2D:
-    Id: 
-    Name: 
-    MaxLength: 0
-    MaxHeight: 0
-  object2D:
-    Id: 
-    EnvironmentId: 
-    PrefabId: 
-    PositionX: 0
-    PositionY: 0
-    ScaleX: 0
-    ScaleY: 0
-    RotationZ: 0
-    SortingLayer: 0
   userApiClient: {fileID: 6977352232143043724}
-  enviroment2DApiClient: {fileID: 4614609716356934699}
-  object2DApiClient: {fileID: 1503534313345687017}
 --- !u!1 &4650201626984016638
 GameObject:
   m_ObjectHideFlags: 0
