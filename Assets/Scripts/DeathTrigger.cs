@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class DeathTrigger : MonoBehaviour
 {
     [SerializeField] GameObject avatar;
     [SerializeField] Button retryButton;
