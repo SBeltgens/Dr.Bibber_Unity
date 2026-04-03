@@ -21,6 +21,7 @@ public void ColorSelectedAvatar(int avatarIndex)
     {
         Color32 unselectedColor = new Color32(200, 200, 200, 160);
         PlayerPrefs.SetInt("avatar", avatarIndex);
+        // PlayerPrefs.GetInt("avatar");
         if (avatarIndex == 0)
         {
             

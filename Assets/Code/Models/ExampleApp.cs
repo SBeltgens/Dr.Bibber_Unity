@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ExampleApp : MonoBehaviour
 {
@@ -12,10 +13,8 @@ public class ExampleApp : MonoBehaviour
     public TMP_InputField firstNameInput;
     public TMP_InputField lastNameInput;
     public TMP_InputField nameDoctorInput;
-    public TMP_InputField operationTypeInput;
+    public TMP_Dropdown operationTypeDropDown;
     public TMP_InputField operationDateInput;
-
-    public ExampleApp exampleApp;
 
     [Header("Test data")]
     public User user;
@@ -41,7 +40,7 @@ public class ExampleApp : MonoBehaviour
         user.firstName = firstNameInput.text;
         user.lastName = lastNameInput.text;
         user.nameDoctor = nameDoctorInput.text;
-        user.operationType = operationTypeInput.text;
+        user.operationType = operationTypeDropDown.itemText.text;
         user.operationDate = operationDateInput.text;
 
         IWebRequestReponse webRequestResponse = await userApiClient.Register(user);
@@ -92,7 +91,7 @@ public class ExampleApp : MonoBehaviour
     [ContextMenu("User/Read user")]
     public async Task<IWebRequestReponse> ReadUser()
     {
-        IWebRequestReponse webRequestResponse = await exampleApp.ReadUser();
+        IWebRequestReponse webRequestResponse = await ReadUser();
 
         switch (webRequestResponse)
         {
