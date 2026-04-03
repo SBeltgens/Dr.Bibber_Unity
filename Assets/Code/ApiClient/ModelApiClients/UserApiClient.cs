@@ -6,7 +6,7 @@ using UnityEngine;
 public class UserApiClient : MonoBehaviour
 {
     public WebClient webClient;
-
+    public User user;
     public async Awaitable<IWebRequestReponse> Register(User user)
     {
         string route = "/account/register";
@@ -24,6 +24,12 @@ public class UserApiClient : MonoBehaviour
         return ProcessLoginResponse(response);
     }
 
+    public async Awaitable<IWebRequestReponse> GetUserData(User user)
+    {
+        string route = "/account/userdata";
+        return await webClient.SendGetRequest(route);
+    }
+
     private IWebRequestReponse ProcessLoginResponse(IWebRequestReponse webRequestResponse)
     {
         switch (webRequestResponse)
@@ -35,27 +41,6 @@ public class UserApiClient : MonoBehaviour
                 return new WebRequestData<string>("Succes");
             default:
                 return webRequestResponse;
-        }
-    }
-    public async void ReadUser()
-    {
-        IWebRequestReponse webRequestResponse = await UserApiClient.ReadUser(User.Email);
-
-        switch (webRequestResponse)
-        {
-            case WebRequestData<List<Object2D>> dataResponse:
-                List<Object2D> object2Ds = dataResponse.Data;
-                Debug.Log("List of object2Ds: " + object2Ds);
-                object2Ds.ForEach(object2D => Debug.Log(object2D.Id));
-                // TODO: Succes scenario. Show the enviroments in the UI
-                break;
-            case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Read object2Ds error: " + errorMessage);
-                // TODO: Error scenario. Show the errormessage to the user.
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
         }
     }
 
