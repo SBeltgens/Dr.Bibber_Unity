@@ -52,9 +52,10 @@ public class Timer : MonoBehaviour
         float bestTime = PlayerPrefs.GetFloat("BestTime");
 
 
-        if (bestTime > elapsedTime)
+        if (bestTime < elapsedTime)
         {
             PlayerPrefs.SetFloat("BestTime", elapsedTime);
+            //stuur naar database
         }
                        
         }
