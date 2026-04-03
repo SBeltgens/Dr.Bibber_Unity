@@ -20,12 +20,15 @@ public class ExampleApp : MonoBehaviour
     [ContextMenu("User/Register")]
     public async void Register()
     {
+        user.Email = usernameInput.text;
+        user.Password = passwordInput.text;
         IWebRequestReponse webRequestResponse = await userApiClient.Register(user);
 
         switch (webRequestResponse)
         {
             case WebRequestData<string> dataResponse:
                 Debug.Log("Register succes!");
+
                 // TODO: Handle succes scenario;
                 break;
             case WebRequestError errorResponse:
@@ -41,12 +44,15 @@ public class ExampleApp : MonoBehaviour
     [ContextMenu("User/Login")]
     public async void Login()
     {
+        user.Email = usernameInput.text;
+        user.Password = passwordInput.text;
         IWebRequestReponse webRequestResponse = await userApiClient.Login(user);
 
         switch (webRequestResponse)
         {
             case WebRequestData<string> dataResponse:
                 Debug.Log("Login succes!");
+
                 // TODO: Todo handle succes scenario.
                 break;
             case WebRequestError errorResponse:
@@ -60,7 +66,7 @@ public class ExampleApp : MonoBehaviour
     }
 
     #endregion
+    #region Read user
 
-    
 
 }
