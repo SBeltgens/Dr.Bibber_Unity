@@ -1,52 +1,77 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class HighscoreApiClient : MonoBehaviour
 {
     public WebClient webClient;
 
-    // POST methode om highscore te sturen
     public async Awaitable<IWebRequestReponse> PostHighscore(Highscore highscore)
     {
+        Debug.Log("📤 POST Highscore");
+
         string route = "/highscores";
         string data = JsonConvert.SerializeObject(highscore, JsonHelper.CamelCaseSettings);
 
+        Debug.Log("➡️ POST data: " + data);
+
         IWebRequestReponse response = await webClient.SendPostRequest(route, data);
+
+        Debug.Log("⬅️ POST response: " + response);
+
         return ParseResponse(response);
     }
 
-    // GET methode om highscore te krijgen
-    public async Awaitable<IWebRequestReponse> GetHighscores(string gameName)
+    public async Awaitable<IWebRequestReponse> UpdateHighscore(string gameName, Highscore highscore)
     {
-        string route = "/highscores"; 
+        Debug.Log("📤 PUT Highscore");
+
+        string route = "/highscores/" + gameName;
+        string data = JsonConvert.SerializeObject(highscore, JsonHelper.CamelCaseSettings);
+
+        Debug.Log("➡️ PUT data: " + data);
+
+        IWebRequestReponse response = await webClient.SendPutRequest(route, data);
+
+        Debug.Log("⬅️ PUT response: " + response);
+
+        return ParseResponse(response);
+    }
+
+    public async Awaitable<IWebRequestReponse> GetHighscoreByGame(string gameName)
+    {
+        Debug.Log("📥 GET Highscore");
+
+        string route = "/highscores/" + gameName;
+
         IWebRequestReponse response = await webClient.SendGetRequest(route);
 
-        switch (response)
-        {
-            case WebRequestData<string> data:
+        Debug.Log("⬅️ GET response: " + response);
 
-                List<Highscore> highscores = JsonConvert.DeserializeObject<List<Highscore>>(data.Data);
-                if (highscores.Count > 0)
-                {
-                    highscores.Sort((a, b) => a.score.CompareTo(b.score)); 
-                    return new WebRequestData<Highscore>(highscores[0]);
-                }
-                return null;
-
-            default:
-                return response;
-        }
+        return ParseResponse(response);
     }
 
     private IWebRequestReponse ParseResponse(IWebRequestReponse response)
     {
+        if (response == null)
+        {
+            Debug.LogError("❌ Response is NULL");
+            return null;
+        }
+
         switch (response)
         {
             case WebRequestData<string> data:
+                Debug.Log("📦 JSON: " + data.Data);
+
                 Highscore hs = JsonConvert.DeserializeObject<Highscore>(data.Data);
                 return new WebRequestData<Highscore>(hs);
+
+            case WebRequestError error:
+                Debug.LogWarning("⚠️ API error ontvangen (waarschijnlijk niet ingelogd)");
+                return error;
+
             default:
+                Debug.LogWarning("⚠️ Onbekende response, maar geen crash");
                 return response;
         }
     }

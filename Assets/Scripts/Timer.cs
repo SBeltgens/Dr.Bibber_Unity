@@ -1,62 +1,114 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class Timer : MonoBehaviour
 {
+    [SerializeField] private TMP_Text timerText;
+    public HighscoreApiClient apiClient;
+
+    private float elapsedTime = 0f;
+    private bool isRunning = false;
+
     private void Start()
     {
+        Debug.Log("⏱ Timer gestart");
         StartTimer();
+
+        
     }
-    [SerializeField] private TMP_Text timerText;
 
-        private float elapsedTime = 0f;
-        private bool isRunning = false;
-
-        void Update()
+    void Update()
+    {
+        if (isRunning)
         {
-            if (isRunning)
-            {
-                elapsedTime += Time.deltaTime;
-                UpdateTimerDisplay(elapsedTime);
-            }
-        }
-
-        public void StartTimer()
-        {
-            isRunning = true;
-        }
-
-        public void StopTimer()
-        {
-            SaveTime();
-            isRunning = false;
-        }
-
-        public void ResetTimer()
-        {
-            elapsedTime = 0f;
+            elapsedTime += Time.deltaTime;
             UpdateTimerDisplay(elapsedTime);
         }
+    }
 
-        void UpdateTimerDisplay(float time)
+    public void StartTimer()
+    {
+        Debug.Log("▶️ Timer loopt");
+        isRunning = true;
+    }
+
+    public void StopTimer()
+    {
+        Debug.Log("⏹ Timer gestopt");
+        isRunning = false;
+        SaveTime();
+    }
+
+    public void ResetTimer()
+    {
+        Debug.Log("🔄 Timer reset");
+        elapsedTime = 0f;
+        UpdateTimerDisplay(elapsedTime);
+    }
+
+    void UpdateTimerDisplay(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60);
+        int seconds = Mathf.FloorToInt(time % 60);
+        int milliseconds = Mathf.FloorToInt((time * 1000) % 1000);
+
+        timerText.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+    }
+
+    async void SaveTime()
+    {
+        Debug.Log("💾 SaveTime gestart");
+
+        float bestTime = PlayerPrefs.GetFloat("bestTime", 0);
+
+        bool isNewHighscore = elapsedTime > bestTime;
+
+        if (!isNewHighscore)
         {
-            int minutes = Mathf.FloorToInt(time / 60);
-            int seconds = Mathf.FloorToInt(time % 60);
-            int milliseconds = Mathf.FloorToInt((time * 1000) % 1000);
-
-            timerText.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+            Debug.Log("❌ Geen nieuwe highscore");
+            return;
         }
-        void SaveTime()
-        {
-        float bestTime = PlayerPrefs.GetFloat("bestTime");
 
+        Debug.Log("✅ Nieuwe highscore!");
 
-        if (bestTime < elapsedTime)
+        PlayerPrefs.SetFloat("bestTime", elapsedTime);
+
+        // 👉 Als apiClient niet bestaat → gewoon stoppen (GEEN CRASH)
+        if (apiClient == null)
         {
-            PlayerPrefs.SetFloat("bestTime", elapsedTime);
-            //stuur naar database
+            Debug.LogWarning("⚠️ apiClient niet ingesteld → skip API");
+            return;
         }
-                       
+
+        Highscore hs = new Highscore
+        {
+            gameName = "MyMinigame",
+            score = Mathf.FloorToInt(elapsedTime * 1000)
+        };
+
+        try
+        {
+            Debug.Log("➡️ Probeer highscore op te halen...");
+
+            var response = await apiClient.GetHighscoreByGame(hs.gameName);
+
+            if (response is WebRequestData<Highscore>)
+            {
+                Debug.Log("🔄 Update highscore");
+                await apiClient.UpdateHighscore(hs.gameName, hs);
+            }
+            else
+            {
+                Debug.Log("🆕 Nieuwe highscore posten");
+                await apiClient.PostHighscore(hs);
+            }
+
+            Debug.Log("✅ API call gelukt");
+        }
+        catch (System.Exception e)
+        {
+            // 🔥 BELANGRIJK: hier voorkom je crash
+            Debug.LogError("❌ API ERROR (maar game gaat door): " + e.Message);
         }
     }
+}
