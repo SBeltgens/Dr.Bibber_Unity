@@ -7,6 +7,19 @@ public class UserApiClient : MonoBehaviour
 {
     public WebClient webClient;
     public User user;
+
+    public async Awaitable<IWebRequestReponse> UpdateUserSettings(UserSettings settings)
+    {
+        string route = "/account/usersettings";
+        string data = JsonConvert.SerializeObject(settings, JsonHelper.CamelCaseSettings);
+        return await webClient.SendPutRequest(route, data);
+    }
+    public async Awaitable<IWebRequestReponse> UpdateUserStats(UserStats stats)
+    {
+        string route = "/account/userstats";
+        string data = JsonConvert.SerializeObject(stats, JsonHelper.CamelCaseSettings);
+        return await webClient.SendPutRequest(route, data);
+    }
     public async Awaitable<IWebRequestReponse> Register(User user)
     {
         string route = "/account/register";
@@ -24,7 +37,7 @@ public class UserApiClient : MonoBehaviour
         return ProcessLoginResponse(response);
     }
 
-    public async Awaitable<IWebRequestReponse> GetUserData(User user)
+    public async Awaitable<IWebRequestReponse> GetUserData()
     {
         string route = "/account/userdata";
         return await webClient.SendGetRequest(route);

@@ -35,13 +35,13 @@ public class ExampleApp : MonoBehaviour
         }
         else
         {
-            user.age = result;
+            user.settings.age = result;
         }
-        user.firstName = firstNameInput.text;
-        user.lastName = lastNameInput.text;
-        user.nameDoctor = nameDoctorInput.text;
-        user.operationType = operationTypeDropDown.itemText.text;
-        user.operationDate = operationDateInput.text;
+        user.settings.firstName = firstNameInput.text;
+        user.settings.lastName = lastNameInput.text;
+        user.settings.nameDoctor = nameDoctorInput.text;
+        user.settings.operationType = operationTypeDropDown.itemText.text;
+        user.settings.operationDate = operationDateInput.text;
 
         IWebRequestReponse webRequestResponse = await userApiClient.Register(user);
 
@@ -49,8 +49,7 @@ public class ExampleApp : MonoBehaviour
         {
             case WebRequestData<string> dataResponse:
                 Debug.Log("Register succes!");
-
-                // TODO: Handle succes scenario;
+                IWebRequestReponse userInfoWebRequestResponse = await userApiClient.UpdateUserSettings(user.settings);
                 break;
             case WebRequestError errorResponse:
                 string errorMessage = errorResponse.ErrorMessage;
@@ -73,7 +72,7 @@ public class ExampleApp : MonoBehaviour
         {
             case WebRequestData<string> dataResponse:
                 Debug.Log("Login succes!");
-
+                ReadUser();
                 // TODO: Todo handle succes scenario.
                 break;
             case WebRequestError errorResponse:
@@ -91,18 +90,18 @@ public class ExampleApp : MonoBehaviour
     [ContextMenu("User/Read user")]
     public async Task<IWebRequestReponse> ReadUser()
     {
-        IWebRequestReponse webRequestResponse = await ReadUser();
+        IWebRequestReponse webRequestResponse = await userApiClient.GetUserData();
 
         switch (webRequestResponse)
         {
             case WebRequestData<User> dataResponse:
                 user = dataResponse.Data;
                 Debug.Log("Gebruiker: " + user);
-                PlayerPrefs.SetString("firstName", user.firstName);
-                PlayerPrefs.SetString("lastName", user.lastName);
-                PlayerPrefs.SetInt("age", user.age);
-                PlayerPrefs.SetInt("avatar", user.avatar);
-                PlayerPrefs.SetString("balanceMinigameHighscore", user.balanceMinigameHighscore);
+                PlayerPrefs.SetString("firstName", user.settings.firstName);
+                PlayerPrefs.SetString("lastName", user.settings.lastName);
+                PlayerPrefs.SetInt("age", user.settings.age);
+                PlayerPrefs.SetInt("avatar", user.stats.avatar);
+                PlayerPrefs.SetString("balanceMinigameHighscore", user.stats.balanceMinigameHighscore);
                 // TODO: Succes scenario. Show the enviroments in the UI
                 break;
             case WebRequestError errorResponse:
