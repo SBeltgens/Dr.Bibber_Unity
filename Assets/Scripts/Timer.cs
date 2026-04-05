@@ -67,12 +67,14 @@ public class Timer : MonoBehaviour
         if (!isNewHighscore)
         {
             Debug.Log("❌ Geen nieuwe highscore");
-            return;
         }
+        else
+        {
+            Debug.Log("✅ Nieuwe highscore!");
 
-        Debug.Log("✅ Nieuwe highscore!");
-
-        PlayerPrefs.SetFloat("bestTime", elapsedTime);
+            PlayerPrefs.SetFloat("bestTime", elapsedTime);
+        }
+        bestTimeText.text = PlayerPrefs.GetFloat("Score").ToString();
 
         // 👉 Als apiClient niet bestaat → gewoon stoppen (GEEN CRASH)
         if (apiClient == null)
@@ -86,7 +88,6 @@ public class Timer : MonoBehaviour
             Score = Mathf.FloorToInt(elapsedTime * 1000)
         };
 
-        bestTimeText.text = hs.Score.ToString();
 
         try
         {
@@ -112,5 +113,6 @@ public class Timer : MonoBehaviour
             // 🔥 BELANGRIJK: hier voorkom je crash
             Debug.LogError("❌ API ERROR (maar game gaat door): " + e.Message);
         }
+
     }
 }

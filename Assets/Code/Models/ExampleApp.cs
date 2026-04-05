@@ -227,7 +227,6 @@ public class ExampleApp : MonoBehaviour
             PlayerPrefs.SetString("BehandelDatum", user.settings.BehandelDatum);
         }
 
-        // --- UserAvatar ---
         if (user.avatar != null)
         {
             PlayerPrefs.SetInt("AvatarId", user.avatar.AvatarId);
@@ -241,5 +240,48 @@ public class ExampleApp : MonoBehaviour
 
         Debug.Log("User data succesvol opgeslagen met class-variabele namen.");
     }
+    
+    
+    [ContextMenu("User/Test PlayerPrefs")]
+    public void TestPlayerPrefs()
+    {
+        Debug.Log("<color=cyan>--- PlayerPrefs Test Start ---</color>");
+
+        // Check Settings
+        if (PlayerPrefs.HasKey("KindVoornaam"))
+        {
+            Debug.Log($"[Settings] Naam: {PlayerPrefs.GetString("KindVoornaam")} {PlayerPrefs.GetString("KindAchternaam")}");
+            Debug.Log($"[Settings] Leeftijd: {PlayerPrefs.GetInt("KindLeeftijd")}");
+            Debug.Log($"[Settings] Arts: {PlayerPrefs.GetString("ArtsNaam")}");
+            Debug.Log($"[Settings] Behandeling: {PlayerPrefs.GetString("BehandelingType")} op {PlayerPrefs.GetString("BehandelDatum")}");
+        }
+        else
+        {
+            Debug.LogWarning("Geen Settings gevonden in PlayerPrefs.");
+        }
+
+        // Check Avatar
+        if (PlayerPrefs.HasKey("AvatarId"))
+        {
+            Debug.Log($"[Avatar] ID: {PlayerPrefs.GetInt("AvatarId")}");
+        }
+        else
+        {
+            Debug.LogWarning("Geen AvatarId gevonden in PlayerPrefs.");
+        }
+
+        // Check Highscore
+        if (PlayerPrefs.HasKey("Score"))
+        {
+            Debug.Log($"[Highscore] Score (float): {PlayerPrefs.GetFloat("Score")}");
+        }
+        else
+        {
+            Debug.LogWarning("Geen Score gevonden in PlayerPrefs.");
+        }
+
+        Debug.Log("<color=cyan>--- PlayerPrefs Test Einde ---</color>");
+    }
 }
+
         #endregion

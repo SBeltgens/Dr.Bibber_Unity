@@ -2332,6 +2332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 607285768}
+  bestTimeText: {fileID: 1015048462}
   apiClient: {fileID: 359378290}
 --- !u!1001 &2907224834686300815
 PrefabInstance:
