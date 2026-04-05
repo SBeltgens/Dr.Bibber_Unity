@@ -176,6 +176,7 @@ public class ExampleApp : MonoBehaviour
     public async Task<IWebRequestReponse> ReadUser()
     {
         IWebRequestReponse webRequestResponseSettings = await userSettingsApiClient.GetSettings();
+
         IWebRequestReponse webRequestResponseAvatar = await avatarApiClient.GetAvatar();
         IWebRequestReponse webRequestResponseHighscore = await highscoreApiClient.GetHighscore();
 

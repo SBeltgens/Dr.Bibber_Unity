@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class UserSettingsApiClient : MonoBehaviour
@@ -63,15 +64,26 @@ public class UserSettingsApiClient : MonoBehaviour
             case WebRequestData<string> data:
                 Debug.Log("📦 JSON: " + data.Data);
 
-                UserHighScores hs = JsonConvert.DeserializeObject<UserHighScores>(data.Data);
-                return new WebRequestData<UserHighScores>(hs);
+                // De API stuurt een array [], dus we parsen als List
+                var settingsList = JsonConvert.DeserializeObject<List<UserSettings>>(data.Data);
+
+                if (settingsList != null && settingsList.Count > 0)
+                {
+                    // We pakken de eerste set instellingen uit de lijst
+                    UserSettings settings = settingsList[0];
+                    return new WebRequestData<UserSettings>(settings);
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ Geen settings gevonden in de array.");
+                    return new WebRequestError("Geen data gevonden");
+                }
 
             case WebRequestError error:
-                Debug.LogWarning("⚠️ API error ontvangen (waarschijnlijk niet ingelogd)");
+                Debug.LogWarning("⚠️ API error ontvangen (waarschijnlijk niet inlogd)");
                 return error;
 
             default:
-                Debug.LogWarning("⚠️ Onbekende response, maar geen crash");
                 return response;
         }
     }

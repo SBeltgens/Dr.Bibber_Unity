@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class HighscoreApiClient : MonoBehaviour
@@ -52,27 +53,69 @@ public class HighscoreApiClient : MonoBehaviour
 
     private IWebRequestReponse ParseResponse(IWebRequestReponse response)
     {
-        if (response == null)
-        {
-            Debug.LogError("❌ Response is NULL");
-            return null;
-        }
+        if (response == null) return null;
 
         switch (response)
         {
             case WebRequestData<string> data:
-                Debug.Log("📦 JSON: " + data.Data);
+                try
+                {
+                    // 1. Parse als de tijdelijke DO lijst (met string scores)
+                    var rawList = JsonConvert.DeserializeObject<List<HighscoreDTO>>(data.Data);
 
-                UserHighScores hs = JsonConvert.DeserializeObject<UserHighScores>(data.Data);
-                return new WebRequestData<UserHighScores>(hs);
+                    if (rawList != null && rawList.Count > 0)
+                    {
+                        HighscoreDTO firstRaw = rawList[0];
+
+                        // 2. Maak het echte UserHighScores object aan
+                        UserHighScores hs = new UserHighScores();
+                        hs.UserId = firstRaw.UserId;
+
+                        // 3. Converteer de string naar float
+                        hs.Score = ParseTimeToFloat(firstRaw.Score);
+
+                        return new WebRequestData<UserHighScores>(hs);
+                    }
+
+                    return new WebRequestData<UserHighScores>(new UserHighScores());
+                }
+                catch (JsonException ex)
+                {
+                    Debug.LogError("❌ JSON Parse Error: " + ex.Message);
+                    return new WebRequestError("Fout bij verwerken data");
+                }
 
             case WebRequestError error:
-                Debug.LogWarning("⚠️ API error ontvangen (waarschijnlijk niet ingelogd)");
                 return error;
 
             default:
-                Debug.LogWarning("⚠️ Onbekende response, maar geen crash");
                 return response;
         }
     }
+
+    // De logica om de tijd-string om te zetten
+    private float ParseTimeToFloat(string timeString)
+    {
+        if (string.IsNullOrEmpty(timeString) || !timeString.Contains(":")) return 0f;
+
+        try
+        {
+            string[] parts = timeString.Split(':');
+            float minutes = float.Parse(parts[0]);
+            // Gebruik InvariantCulture voor de punt/komma scheiding
+            float seconds = float.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture);
+
+            return (minutes * 60f) + seconds;
+        }
+        catch
+        {
+            return 0f;
+        }
+    }
+}
+[System.Serializable]
+public class HighscoreDTO
+{
+    public string UserId;
+    public string Score;
 }

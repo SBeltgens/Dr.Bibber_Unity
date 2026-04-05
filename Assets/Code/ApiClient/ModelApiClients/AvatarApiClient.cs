@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class AvatarApiClient : MonoBehaviour
@@ -63,15 +64,34 @@ public class AvatarApiClient : MonoBehaviour
             case WebRequestData<string> data:
                 Debug.Log("📦 JSON: " + data.Data);
 
-                UserAvatar avatar = JsonConvert.DeserializeObject<UserAvatar>(data.Data);
-                return new WebRequestData<UserAvatar>(avatar);
+                try
+                {
+                    // De API stuurt GEEN array meer, maar een direct object {}
+                    UserAvatar avatar = JsonConvert.DeserializeObject<UserAvatar>(data.Data);
+
+                    if (avatar != null)
+                    {
+                        return new WebRequestData<UserAvatar>(avatar);
+                    }
+                    else
+                    {
+                        Debug.Log("ℹ️ Geen avatar data gevonden. Gebruik default.");
+                        return new WebRequestData<UserAvatar>(new UserAvatar());
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    // Als het tóch een lijst blijkt te zijn in sommige gevallen, 
+                    // vangt deze catch dat op of kun je hier verder debuggen.
+                    Debug.LogError("❌ JSON Parse Error in Avatar: " + ex.Message);
+                    return new WebRequestError("Fout bij verwerken avatar data");
+                }
 
             case WebRequestError error:
-                Debug.LogWarning("⚠️ API error ontvangen (waarschijnlijk niet ingelogd)");
+                Debug.LogWarning("⚠️ API error ontvangen in AvatarApiClient");
                 return error;
 
             default:
-                Debug.LogWarning("⚠️ Onbekende response, maar geen crash");
                 return response;
         }
     }
