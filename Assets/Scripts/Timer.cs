@@ -4,6 +4,7 @@ using TMPro;
 public class Timer : MonoBehaviour
 {
     [SerializeField] private TMP_Text timerText;
+    [SerializeField] private TMP_Text bestTimeText;
     public HighscoreApiClient apiClient;
 
     private float elapsedTime = 0f;
@@ -58,8 +59,8 @@ public class Timer : MonoBehaviour
     async void SaveTime()
     {
         Debug.Log("💾 SaveTime gestart");
-
-        float bestTime = PlayerPrefs.GetFloat("bestTime", 0);
+        
+        float bestTime = PlayerPrefs.GetFloat("Score");
 
         bool isNewHighscore = elapsedTime > bestTime;
 
@@ -80,22 +81,23 @@ public class Timer : MonoBehaviour
             return;
         }
 
-        Highscore hs = new Highscore
+        UserHighScores hs = new UserHighScores
         {
-            gameName = "MyMinigame",
-            score = Mathf.FloorToInt(elapsedTime * 1000)
+            Score = Mathf.FloorToInt(elapsedTime * 1000)
         };
+
+        bestTimeText.text = hs.Score.ToString();
 
         try
         {
             Debug.Log("➡️ Probeer highscore op te halen...");
 
-            var response = await apiClient.GetHighscoreByGame(hs.gameName);
+            var response = await apiClient.GetHighscore();
 
-            if (response is WebRequestData<Highscore>)
+            if (response is WebRequestData<UserHighScores>)
             {
                 Debug.Log("🔄 Update highscore");
-                await apiClient.UpdateHighscore(hs.gameName, hs);
+                await apiClient.UpdateHighscore(hs);
             }
             else
             {
@@ -103,7 +105,7 @@ public class Timer : MonoBehaviour
                 await apiClient.PostHighscore(hs);
             }
 
-            Debug.Log("✅ API call gelukt");
+            Debug.Log("✅ API call klaar");
         }
         catch (System.Exception e)
         {

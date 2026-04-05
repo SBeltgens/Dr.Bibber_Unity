@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,41 +16,39 @@ public class ExampleApp : MonoBehaviour
     public TMP_InputField nameDoctorInput;
     public TMP_Dropdown operationTypeDropDown;
     public TMP_InputField operationDateInput;
+    public TMP_Text responseText;
 
     [Header("Test data")]
     public User user;
 
     [Header("Dependencies")]
     public UserApiClient userApiClient;
+    public UserSettingsApiClient userSettingsApiClient;
+    public HighscoreApiClient highscoreApiClient;
+    public AvatarApiClient avatarApiClient;
 
     #region Login
 
     [ContextMenu("User/Register")]
     public async void Register()
     {
-        user.email = emailInput.text;
-        user.password = passwordInput.text;
-        if (!int.TryParse(ageInput.text, out int result))
+        if(!SetUserInfo())
         {
-            Debug.Log("Invalid age input. Please enter a valid number.");
+            return;
         }
-        else
-        {
-            user.settings.age = result;
-        }
-        user.settings.firstName = firstNameInput.text;
-        user.settings.lastName = lastNameInput.text;
-        user.settings.nameDoctor = nameDoctorInput.text;
-        user.settings.operationType = operationTypeDropDown.itemText.text;
-        user.settings.operationDate = operationDateInput.text;
 
-        IWebRequestReponse webRequestResponse = await userApiClient.Register(user);
+        if (!ValidateRegisterInput())
+        {
+            return;
+        }
+        IWebRequestReponse registerWebRequestRepsonse= await userApiClient.Register(user.credentials);
+        IWebRequestReponse webRequestResponse = await userApiClient.Login(user.credentials);
 
         switch (webRequestResponse)
         {
             case WebRequestData<string> dataResponse:
                 Debug.Log("Register succes!");
-                IWebRequestReponse userInfoWebRequestResponse = await userApiClient.UpdateUserSettings(user.settings);
+                IWebRequestReponse userInfoWebRequestResponse = await userSettingsApiClient.PostSettings(user.settings);
                 break;
             case WebRequestError errorResponse:
                 string errorMessage = errorResponse.ErrorMessage;
@@ -64,15 +63,16 @@ public class ExampleApp : MonoBehaviour
     [ContextMenu("User/Login")]
     public async void Login()
     {
-        user.email = emailInput.text;
-        user.password = passwordInput.text;
-        IWebRequestReponse webRequestResponse = await userApiClient.Login(user);
+        user.credentials.email = emailInput.text;
+        user.credentials.password = passwordInput.text;
+        IWebRequestReponse webRequestResponse = await userApiClient.Login(user.credentials);
 
         switch (webRequestResponse)
         {
             case WebRequestData<string> dataResponse:
                 Debug.Log("Login succes!");
-                ReadUser();
+                await ReadUser();
+                SaveUserToPrefs();
                 // TODO: Todo handle succes scenario.
                 break;
             case WebRequestError errorResponse:
@@ -84,60 +84,159 @@ public class ExampleApp : MonoBehaviour
                 throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
         }
     }
+    private bool SetUserInfo()
+    {
+        user.credentials.email = emailInput.text;
+        user.credentials.password = passwordInput.text;
+        if (!ValidatePasswordInput())
+        {
+            return false;
+        }
+            
+        if (!int.TryParse(ageInput.text, out int result))
+        {
+            responseText.text = "Voer een geldige leeftijd in.";
+            return false;
+        }
+        else
+        {
+            user.settings.KindLeeftijd = result;
+        }
+        user.settings.KindVoornaam = firstNameInput.text;
+        user.settings.KindAchternaam = lastNameInput.text;
+        user.settings.ArtsNaam = nameDoctorInput.text;
+        user.settings.BehandelingType = operationTypeDropDown.itemText.text;
+        user.settings.BehandelDatum = operationDateInput.text;
+        return true;
 
+    }
+    private bool ValidateRegisterInput()
+    {
+        TMP_InputField[] requiredFields = {
+        emailInput,
+        ageInput,
+        firstNameInput,
+        lastNameInput,
+        nameDoctorInput,
+        operationDateInput
+    };
+
+        foreach (TMP_InputField field in requiredFields)
+        {
+            if (string.IsNullOrWhiteSpace(field.text))
+            {
+                responseText.text = "Vul alle velden in.";
+                return false;
+            }
+        }
+
+        responseText.text = "";
+        return true;
+    }
+    private bool ValidatePasswordInput()
+    {
+        string password = passwordInput.text;
+
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            responseText.text = "Vul alle velden in.";
+            return false;
+        }
+
+        bool hasDigit = false;
+        bool hasSpecial = false;
+
+        foreach (char c in password)
+        {
+            if (char.IsDigit(c)) hasDigit = true;
+            if (!char.IsLetterOrDigit(c)) hasSpecial = true;
+        }
+
+        if (password.Length < 8)
+        {
+            responseText.text = "Wachtwoord moet minimaal 8 tekens lang zijn.";
+            return false;
+        }
+        if (!hasDigit)
+        {
+            responseText.text = "Wachtwoord moet minimaal één cijfer bevatten.";
+            return false;
+        }
+        if (!hasSpecial)
+        {
+            responseText.text = "Wachtwoord moet een speciaal teken bevatten.";
+            return false;
+        }
+        responseText.text = "";
+        return true;
+    }
     #endregion
     #region Read user
     [ContextMenu("User/Read user")]
     public async Task<IWebRequestReponse> ReadUser()
     {
-        IWebRequestReponse webRequestResponse = await userApiClient.GetUserData();
+        IWebRequestReponse webRequestResponseSettings = await userSettingsApiClient.GetSettings();
+        IWebRequestReponse webRequestResponseHighscore = await highscoreApiClient.GetHighscore();
+        IWebRequestReponse webRequestResponseAvatar = await avatarApiClient.GetAvatar();
 
-        switch (webRequestResponse)
+        if (webRequestResponseSettings is WebRequestData<UserSettings> settingsData)
         {
-            case WebRequestData<User> dataResponse:
-                user = dataResponse.Data;
-                Debug.Log("Gebruiker: " + user);
-                PlayerPrefs.SetString("firstName", user.settings.firstName);
-                PlayerPrefs.SetString("lastName", user.settings.lastName);
-                PlayerPrefs.SetInt("age", user.settings.age);
-                PlayerPrefs.SetInt("avatar", user.stats.avatar);
-                PlayerPrefs.SetString("balanceMinigameHighscore", user.stats.balanceMinigameHighscore);
-                // TODO: Succes scenario. Show the enviroments in the UI
-                break;
-            case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Read user error: " + errorMessage);
-                // TODO: Error scenario. Show the errormessage to the user.
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            user.settings = settingsData.Data;
+            Debug.Log("User settings retrieved: " + user.settings.KindVoornaam);
         }
-        return webRequestResponse;
+        else
+        {
+            Debug.LogError("Settings response was niet van het type WebRequestData of bevat een fout.");
+        }
+
+        if (webRequestResponseHighscore is WebRequestData<UserHighScores> highscoreData)
+        {
+            user.highScores = highscoreData.Data;
+            Debug.Log("Highscores retrieved: " + user.highScores.Score);
+        }
+        else
+        {
+            Debug.LogError("Highscore response was niet van het type WebRequestData.");
+        }
+
+        if (webRequestResponseAvatar is WebRequestData<UserAvatar> avatarData)
+        {
+            user.avatar = avatarData.Data;
+            Debug.Log("Avatar retrieved: " + user.avatar.AvatarId);
+        }
+        else
+        {
+            Debug.LogError("Avatar response was niet van het type WebRequestData.");
+        }
+        return webRequestResponseSettings;
     }
-    //[ContextMenu("Object2D/Read all")]
-    //public async void ReadObject2Ds()
-    //{
-    //    IWebRequestReponse webRequestResponse = await object2DApiClient.ReadObject2Ds(object2D.EnvironmentId);
+    public void SaveUserToPrefs()
+    {
+        if (user == null) return;
 
-    //    switch (webRequestResponse)
-    //    {
-    //        case WebRequestData<List<Object2D>> dataResponse:
-    //            List<Object2D> object2Ds = dataResponse.Data;
-    //            Debug.Log("List of object2Ds: " + object2Ds);
-    //            object2Ds.ForEach(object2D => Debug.Log(object2D.Id));
-    //            // TODO: Succes scenario. Show the enviroments in the UI
-    //            break;
-    //        case WebRequestError errorResponse:
-    //            string errorMessage = errorResponse.ErrorMessage;
-    //            Debug.Log("Read object2Ds error: " + errorMessage);
-    //            // TODO: Error scenario. Show the errormessage to the user.
-    //            break;
-    //        default:
-    //            throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
-    //    }
-    //}
-    #endregion
+        if (user.settings != null)
+        {
+            PlayerPrefs.SetString("KindVoornaam", user.settings.KindVoornaam);
+            PlayerPrefs.SetString("KindAchternaam", user.settings.KindAchternaam);
+            PlayerPrefs.SetInt("KindLeeftijd", user.settings.KindLeeftijd);
+            PlayerPrefs.SetString("ArtsNaam", user.settings.ArtsNaam);
+            PlayerPrefs.SetString("BehandelingType", user.settings.BehandelingType);
+            PlayerPrefs.SetString("BehandelDatum", user.settings.BehandelDatum);
+        }
 
+        // --- UserAvatar ---
+        if (user.avatar != null)
+        {
+            PlayerPrefs.SetInt("AvatarId", user.avatar.AvatarId);
+        }
 
+        if (user.highScores != null)
+        {
+            PlayerPrefs.SetFloat("Score", user.highScores.Score);
+        }
+        PlayerPrefs.Save();
+
+        Debug.Log("User data succesvol opgeslagen met class-variabele namen.");
+    }
 }
-
+        #endregion

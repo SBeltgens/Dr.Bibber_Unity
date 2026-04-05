@@ -1,29 +1,43 @@
 using System;
+using JetBrains.Annotations;
 
 [Serializable]
 public class User
 {
+    public UserCredentials credentials;
+    public UserSettings settings;
+    public UserAvatar avatar;
+    public UserHighScores highScores;
+}
+[Serializable]
+public class UserCredentials
+{
     public string email;
     public string password;
-
-    public UserSettings settings;
-    public UserStats stats;
 }
 
 [Serializable]
 public class UserSettings
 {
-    public string firstName;
-    public string lastName;
-    public int age = 9;
-    public string nameDoctor;
-    public string operationType;
-    public string operationDate;
+    public string UserId;
+    public string KindVoornaam;
+    public string KindAchternaam;
+    public int KindLeeftijd = 9;
+    public string ArtsNaam;
+    public string BehandelingType;
+    public string BehandelDatum;
 }
 
 [Serializable]
-public class UserStats
+public class UserAvatar
 {
-    public int avatar = 0;
-    public string balanceMinigameHighscore = "00:00.00";
+    public string UserId;
+    public int AvatarId = 0;
+}
+
+[Serializable]
+public class UserHighScores
+{
+    public string UserId;
+    public float Score;
 }

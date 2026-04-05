@@ -1,16 +1,16 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
 
-public class HighscoreApiClient : MonoBehaviour
+public class UserSettingsApiClient : MonoBehaviour
 {
     public WebClient webClient;
 
-    public async Awaitable<IWebRequestReponse> PostHighscore(UserHighScores highscore)
+    public async Awaitable<IWebRequestReponse> PostSettings(UserSettings settings)
     {
-        Debug.Log("📤 POST Highscore");
+        Debug.Log("📤 POST Settings");
 
-        string route = "/highscores";
-        string data = JsonConvert.SerializeObject(highscore, JsonHelper.CamelCaseSettings);
+        string route = "/usersettings";
+        string data = JsonConvert.SerializeObject(settings, JsonHelper.CamelCaseSettings);
 
         Debug.Log("➡️ POST data: " + data);
 
@@ -21,12 +21,12 @@ public class HighscoreApiClient : MonoBehaviour
         return ParseResponse(response);
     }
 
-    public async Awaitable<IWebRequestReponse> UpdateHighscore(UserHighScores highscore)
+    public async Awaitable<IWebRequestReponse> UpdateSettings(UserSettings settings)
     {
-        Debug.Log("📤 PUT Highscore");
+        Debug.Log("📤 PUT Settings");
 
-        string route = "/highscores";
-        string data = JsonConvert.SerializeObject(highscore, JsonHelper.CamelCaseSettings);
+        string route = "/usersettings";
+        string data = JsonConvert.SerializeObject(settings, JsonHelper.CamelCaseSettings);
 
         Debug.Log("➡️ PUT data: " + data);
 
@@ -37,11 +37,11 @@ public class HighscoreApiClient : MonoBehaviour
         return ParseResponse(response);
     }
 
-    public async Awaitable<IWebRequestReponse> GetHighscore()
+    public async Awaitable<IWebRequestReponse> GetSettings()
     {
-        Debug.Log("📥 GET Highscore");
+        Debug.Log("📥 GET Settings");
 
-        string route = "/highscores";
+        string route = "/usersettings";
 
         IWebRequestReponse response = await webClient.SendGetRequest(route);
 

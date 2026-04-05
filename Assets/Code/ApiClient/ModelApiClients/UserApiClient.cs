@@ -7,42 +7,22 @@ public class UserApiClient : MonoBehaviour
 {
     public WebClient webClient;
     public User user;
-
-    public async Awaitable<IWebRequestReponse> UpdateUserSettings(UserSettings settings)
-    {
-        string route = "/account/usersettings";
-        string data = JsonConvert.SerializeObject(settings, JsonHelper.CamelCaseSettings);
-        return await webClient.SendPutRequest(route, data);
-    }
-    public async Awaitable<IWebRequestReponse> UpdateUserStats(UserStats stats)
-    {
-        string route = "/account/userstats";
-        string data = JsonConvert.SerializeObject(stats, JsonHelper.CamelCaseSettings);
-        return await webClient.SendPutRequest(route, data);
-    }
-    public async Awaitable<IWebRequestReponse> Register(User user)
+    public async Awaitable<IWebRequestReponse> Register(UserCredentials credentials)
     {
         string route = "/account/register";
-        string data = JsonConvert.SerializeObject(user, JsonHelper.CamelCaseSettings);
+        string data = JsonConvert.SerializeObject(credentials, JsonHelper.CamelCaseSettings);
 
         return await webClient.SendPostRequest(route, data);
     }
 
-    public async Awaitable<IWebRequestReponse> Login(User user)
+    public async Awaitable<IWebRequestReponse> Login(UserCredentials credentials)
     {
         string route = "/account/login";
-        string data = JsonConvert.SerializeObject(user, JsonHelper.CamelCaseSettings);
+        string data = JsonConvert.SerializeObject(credentials, JsonHelper.CamelCaseSettings);
 
         IWebRequestReponse response = await webClient.SendPostRequest(route, data);
         return ProcessLoginResponse(response);
     }
-
-    public async Awaitable<IWebRequestReponse> GetUserData()
-    {
-        string route = "/account/userdata";
-        return await webClient.SendGetRequest(route);
-    }
-
     private IWebRequestReponse ProcessLoginResponse(IWebRequestReponse webRequestResponse)
     {
         switch (webRequestResponse)

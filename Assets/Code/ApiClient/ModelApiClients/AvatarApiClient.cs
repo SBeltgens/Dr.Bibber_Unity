@@ -1,16 +1,16 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
 
-public class HighscoreApiClient : MonoBehaviour
+public class AvatarApiClient : MonoBehaviour
 {
     public WebClient webClient;
 
-    public async Awaitable<IWebRequestReponse> PostHighscore(UserHighScores highscore)
+    public async Awaitable<IWebRequestReponse> PostAvatar(UserAvatar avatar)
     {
-        Debug.Log("📤 POST Highscore");
+        Debug.Log("📤 POST Avatar");
 
-        string route = "/highscores";
-        string data = JsonConvert.SerializeObject(highscore, JsonHelper.CamelCaseSettings);
+        string route = "/useravatars";
+        string data = JsonConvert.SerializeObject(avatar, JsonHelper.CamelCaseSettings);
 
         Debug.Log("➡️ POST data: " + data);
 
@@ -21,12 +21,12 @@ public class HighscoreApiClient : MonoBehaviour
         return ParseResponse(response);
     }
 
-    public async Awaitable<IWebRequestReponse> UpdateHighscore(UserHighScores highscore)
+    public async Awaitable<IWebRequestReponse> UpdateAvatar(UserAvatar avatar)
     {
-        Debug.Log("📤 PUT Highscore");
+        Debug.Log("📤 PUT Avatar");
 
-        string route = "/highscores";
-        string data = JsonConvert.SerializeObject(highscore, JsonHelper.CamelCaseSettings);
+        string route = "/useravatars";
+        string data = JsonConvert.SerializeObject(avatar, JsonHelper.CamelCaseSettings);
 
         Debug.Log("➡️ PUT data: " + data);
 
@@ -37,11 +37,11 @@ public class HighscoreApiClient : MonoBehaviour
         return ParseResponse(response);
     }
 
-    public async Awaitable<IWebRequestReponse> GetHighscore()
+    public async Awaitable<IWebRequestReponse> GetAvatar()
     {
         Debug.Log("📥 GET Highscore");
 
-        string route = "/highscores";
+        string route = "/useravatars";
 
         IWebRequestReponse response = await webClient.SendGetRequest(route);
 
@@ -63,8 +63,8 @@ public class HighscoreApiClient : MonoBehaviour
             case WebRequestData<string> data:
                 Debug.Log("📦 JSON: " + data.Data);
 
-                UserHighScores hs = JsonConvert.DeserializeObject<UserHighScores>(data.Data);
-                return new WebRequestData<UserHighScores>(hs);
+                UserAvatar avatar = JsonConvert.DeserializeObject<UserAvatar>(data.Data);
+                return new WebRequestData<UserAvatar>(avatar);
 
             case WebRequestError error:
                 Debug.LogWarning("⚠️ API error ontvangen (waarschijnlijk niet ingelogd)");
