@@ -176,8 +176,9 @@ public class ExampleApp : MonoBehaviour
     public async Task<IWebRequestReponse> ReadUser()
     {
         IWebRequestReponse webRequestResponseSettings = await userSettingsApiClient.GetSettings();
-        IWebRequestReponse webRequestResponseHighscore = await highscoreApiClient.GetHighscore();
         IWebRequestReponse webRequestResponseAvatar = await avatarApiClient.GetAvatar();
+        IWebRequestReponse webRequestResponseHighscore = await highscoreApiClient.GetHighscore();
+
 
         if (webRequestResponseSettings is WebRequestData<UserSettings> settingsData)
         {
@@ -189,16 +190,6 @@ public class ExampleApp : MonoBehaviour
             Debug.LogError("Settings response was niet van het type WebRequestData of bevat een fout.");
         }
 
-        if (webRequestResponseHighscore is WebRequestData<UserHighScores> highscoreData)
-        {
-            user.highScores = highscoreData.Data;
-            Debug.Log("Highscores retrieved: " + user.highScores.Score);
-        }
-        else
-        {
-            Debug.LogError("Highscore response was niet van het type WebRequestData.");
-        }
-
         if (webRequestResponseAvatar is WebRequestData<UserAvatar> avatarData)
         {
             user.avatar = avatarData.Data;
@@ -207,6 +198,17 @@ public class ExampleApp : MonoBehaviour
         else
         {
             Debug.LogError("Avatar response was niet van het type WebRequestData.");
+        }
+
+
+        if (webRequestResponseHighscore is WebRequestData<UserHighScores> highscoreData)
+        {
+            user.highScores = highscoreData.Data;
+            Debug.Log("Highscores retrieved: " + user.highScores.Score);
+        }
+        else
+        {
+            Debug.LogError("Highscore response was niet van het type WebRequestData.");
         }
         return webRequestResponseSettings;
     }

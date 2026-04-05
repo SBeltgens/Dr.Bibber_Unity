@@ -13,7 +13,7 @@ public class SetAvatar : MonoBehaviour
     }
     public void LoadAvatar()
     { 
-        int avatar = PlayerPrefs.GetInt("avatar");
+        int avatar = PlayerPrefs.GetInt("Avatar");
         avatarImage.sprite = avatars[avatar];
     }
 }
