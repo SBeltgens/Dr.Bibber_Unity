@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df8a209b35f16a044afbe613afbfdcdc, type: 3}
+  m_Name: MRI
+  m_EditorClassIdentifier: 
+  titel: MRI
+  beschrijving: Je gaat op een zacht bed liggen dat langzaam in een grote, ronde
+    tunnel schuift. Het is belangrijk dat je zo stil mogelijk blijft liggen, alsof
+    je een standbeeld bent. De MRI maakt harde tok-tok-tok en boem-boem geluiden,
+    maar dat hoort erbij. Je krijgt oordopjes of muziek, zodat het fijner klinkt.
+    Er is altijd iemand die je kan horen en zien, en je kunt op een knopje drukken
+    als je iets wilt zeggen.
+  leukWeetje: 'Leuk weetje: Een MRI gebruikt geen straling. Hij maakt plaatjes met
+    magneten en radiogolven - een beetje zoals een superheldenmachine die door je
+    lichaam heen kan kijken.'

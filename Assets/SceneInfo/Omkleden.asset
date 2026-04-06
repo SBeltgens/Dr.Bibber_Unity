@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df8a209b35f16a044afbe613afbfdcdc, type: 3}
+  m_Name: Omkleden
+  m_EditorClassIdentifier: 
+  titel: Omkleden
+  beschrijving: Voor de MRI moet je soms speciale kleding aan, of je doet sieraden,
+    riemen en metalen dingen af. Dat is helemaal normaal. Het helpt de MRI om goede
+    plaatjes te maken. Je krijgt meestal een rustig kamertje waar je je kunt omkleden,
+    en je mag je eigen spullen veilig achterlaten.
+  leukWeetje: 'Leuk weetje: Omdat de MRI een magneet is, mogen zelfs kleine metalen
+    dingen niet mee naar binnen - zelfs een paperclip zou ernaartoe vliegen.'

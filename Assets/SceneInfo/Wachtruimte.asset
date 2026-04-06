@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df8a209b35f16a044afbe613afbfdcdc, type: 3}
+  m_Name: Wachtruimte
+  m_EditorClassIdentifier: 
+  titel: Wachruimte
+  beschrijving: In de wachtruimte zit je even te wachten tot je aan de beurt bent.
+    Soms zit er iemand bij je, zoals een ouder of verzorger. Je kunt een boekje lezen,
+    een spelletje doen of gewoon even rondkijken. De mensen die er werken zijn er
+    om je te helpen en vertellen precies wanneer je mag komen.
+  leukWeetje: 'Leuk weetje: Een MRI-scanner gebruikt een supersterke magneet. Hij
+    is zo sterk dat hij dingen kan aantrekken die veel verder weg zijn dan een gewone
+    koelkastmagneet.'

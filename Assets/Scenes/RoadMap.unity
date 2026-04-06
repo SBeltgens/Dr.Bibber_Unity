@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 686961070}
   - component: {fileID: 686961069}
   m_Layer: 5
-  m_Name: OmkledenButton2
+  m_Name: TerugOmkledenButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -501,7 +501,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Omkleden
+          m_StringArgument: TerugOmkleden
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &686961070
@@ -633,7 +633,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: MRI
+          m_StringArgument: MRIUitleg
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &708183886
@@ -687,7 +687,7 @@ GameObject:
   - component: {fileID: 749417686}
   - component: {fileID: 749417685}
   m_Layer: 5
-  m_Name: OmkledenButton1
+  m_Name: OmkledenButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
