@@ -62,19 +62,16 @@ public class Timer : MonoBehaviour
         
         float bestTime = PlayerPrefs.GetFloat("Score");
 
-        bool isNewHighscore = elapsedTime > bestTime;
-
-        if (!isNewHighscore)
+        if(elapsedTime > bestTime)
         {
-            Debug.Log("❌ Geen nieuwe highscore");
+            bestTime = elapsedTime;
         }
-        else
-        {
-            Debug.Log("✅ Nieuwe highscore!");
-
-            PlayerPrefs.SetFloat("bestTime", elapsedTime);
-        }
-        bestTimeText.text = PlayerPrefs.GetFloat("Score").ToString();
+        
+        PlayerPrefs.SetFloat("Score", bestTime);
+        int minutes = Mathf.FloorToInt(bestTime / 60);
+        int seconds = Mathf.FloorToInt(bestTime % 60);
+        int milliseconds = Mathf.FloorToInt((bestTime * 1000) % 1000);
+        bestTimeText.text = timerText.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
 
         // 👉 Als apiClient niet bestaat → gewoon stoppen (GEEN CRASH)
         if (apiClient == null)
@@ -85,7 +82,7 @@ public class Timer : MonoBehaviour
 
         UserHighScores hs = new UserHighScores
         {
-            Score = Mathf.FloorToInt(elapsedTime * 1000)
+            Score = bestTime
         };
 
 
